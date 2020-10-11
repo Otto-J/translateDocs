@@ -183,22 +183,38 @@ V5 会在设置 `contenthash` 时候使用 `real content hash`。在此之前，
 
 如果只是添加注释或者改变了变量的名字，会对长期缓存产生积极影响，因为在 压缩混淆`minimizing` 之后变化看不出来。
 
-## Major Changes: Development Support
+## Major Changes: Development Support 主要更改：开发支持
 
-### Named Chunk IDs
+### Named Chunk IDs 
 
 A new named chunk id algorithm enabled by default in development mode gives chunks (and filenames) human-readable names.
 A Module ID is determined by its path, relative to the `context`.
 A Chunk ID is determined by the chunk's content.
 
+
+
+
+
 So you no longer need to use `import(/* webpackChunkName: "name" */ "module")` for debugging.
 But it would still make sense if you want to control the filenames for production environments.
 
+因此你不用使用 `import(/* webpackChunkName: "name" */ "module")` 来方便调试了。如果想在生产环境中控制文件名还是有用的。
+
+
+
 It's possible to use `chunkIds: "named"` in production, but make sure not to accidentally expose sensitive information about module names.
+
+可以在生产中使用  `chunkIds: "named"`，只是需要小心不要意外泄露有关模块名的敏感信息。
+
+
 
 **MIGRATION**: If you dislike the filenames being changed in development, you can pass `chunkIds: "natural"` to use the old numeric mode.
 
-### Module Federation
+**迁移**：如果您不喜欢在开发中更改文件名，则可以通过`chunkIds: "natural"`使用旧的数字模式。
+
+
+
+### Module Federation 模块联合、模块联邦
 
 Webpack 5 adds a new feature called "Module Federation", which allows multiple webpack builds to work together.
 From runtime perspective modules from multiple builds will behave like a huge connected module graph.
@@ -360,15 +376,23 @@ This value is used to make all potential conflicting globals unique.
 
 Webpack 5 will determine the `output.publicPath` automatically when possible.
 
-### Typescript typings
+### Typescript typings TS类型
 
 Webpack 5 generates typescript typings from source code and exposes them via the npm package.
 
+V5 从源代码和导入的npm中生成ts类型。
+
+
+
 **MIGRATION**: Remove `@types/webpack`. Update references when names differ.
 
-## Major Changes: Optimization
+**迁移**：删除`@types/webpack`。名称不同时更新引用。
 
-### Nested tree-shaking
+
+
+## Major Changes: Optimization 主要变化：优化
+
+### Nested tree-shaking 嵌套Tree-Shinking
 
 webpack is now able to track access to nested properties of exports. This can improve Tree Shaking (Unused export elimination and export mangling) when reexporting namespace objects.
 
@@ -388,7 +412,7 @@ console.log(module.inner.a);
 
 In this example, the export `b` can be removed in production mode.
 
-### Inner-module tree-shaking
+### Inner-module tree-shaking 内部模块tree-shaking
 
 webpack 4 didn't analyze dependencies between exports and imports of a module. webpack 5 has a new option `optimization.innerGraph`, which is enabled by default in production mode, that runs an analysis on symbols in a module to figure out dependencies from exports to imports.
 
@@ -453,7 +477,7 @@ The following constructs are supported:
 
 When detecting not analysable code, webpack bails out and doesn't track export information at all for these modules (for performance reasons).
 
-### Side-Effect analysis
+### Side-Effect analysis 副作用分析
 
 The `"sideEffects"` flag in package.json allows to manually flag modules as side-effect-free, which allows to drop them when unused.
 
