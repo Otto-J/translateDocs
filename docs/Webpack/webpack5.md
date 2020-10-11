@@ -91,35 +91,47 @@ This release focus on the following:
 - 使用更好的算法和默认项来改进 Long Term Caching 长期缓存。
 - 使用更好的 Tree Shaking 和 Code Generation 代码生成来提升打包的体积。
 - 提升 web 平台的兼容性。
-- 清理
+- 清理内部处于 weired 怪异状态的结构，而不引入重大更改。
+- 为未来的新特性带来的重大更改做准备，让我们的 v5 版本持续时间长。
 
-## **Migration** Guide
+## **Migration** Guide 迁移指南
 
 [See here for a **migration** guide](/migrate/5)
 
-## Major Changes: Removals
+## Major Changes: Removals 重大更改：移除
 
-### Removed Deprecated Items
+### Removed Deprecated Items 删除弃用内容
 
 All items deprecated in v4 were removed.
 
+v4 中遗弃的特性已经被移除。
+
 **MIGRATION**: Make sure that your webpack 4 build does not print deprecation warnings.
+
+**迁移** ：确保你的 v4 打包时没有打印弃用警告。
 
 Here are a few things that were removed but did not have deprecation warnings in v4:
 
-- IgnorePlugin and BannerPlugin must now be passed only one argument that can be an object, string or function.
+这里是一些在 v4 中没有弃用警告但已经被移除的内容：
 
-### Deprecation codes
+- IgnorePlugin and BannerPlugin must now be passed only one argument that can be an object, string or function.
+- `IgnorePlugin`和 `BannerPlugin` 现在只接受一个参数，可以是 对象、字符串、函数。
+
+### Deprecation codes 弃用的代码
 
 New deprecations include a deprecation code so they are easier to reference.
 
-### Syntax deprecated
+新的弃用包含了一个弃用代码（标志）方便容易找到引用
+
+### Syntax deprecated 语法弃用
 
 `require.include` has been deprecated and will emit a warning by default when used.
 
+`require.include` 已经被弃用，使用时候默认会触发一个警告。
+
 Behavior can be changed with `Rule.parser.requireInclude` to allowed, deprecated or disabled.
 
-### Automatic Node.js Polyfills Removed
+### Automatic Node.js Polyfills Removed 自动引用的 Node.js Polyfills 已经移除。
 
 In the early days, webpack's aim was to allow running most Node.js modules in the browser, but the module landscape changed and many module uses are now written mainly for frontend purposes. webpack <= 4 ships with polyfills for many of the Node.js core modules, which are automatically applied once a module uses any of the core modules (i.e. the `crypto` module).
 
@@ -133,11 +145,13 @@ webpack 5 stops automatically polyfilling these core modules and focus on fronte
 - It's possible to manually add a polyfill for a Node.js core module. An error message will give a hint on how to achieve that.
 - Package authors: Use the `browser` field in `package.json` to make a package frontend-compatible. Provide alternative implementations/dependencies for the browser.
 
-## Major Changes: Long Term Caching
+## Major Changes: Long Term Caching 主要变化：长期缓存
 
-### Deterministic Chunk, Module IDs and Export names
+### Deterministic Chunk, Module IDs and Export names 确定性 chunk，模块 ID 和导出命名
 
 New algorithms were added for long term caching. These are enabled by default in production mode.
+
+为长期缓存添加了新的算法。在生产模式下回默认启用。
 
 `chunkIds: "deterministic"`
 `moduleIds: "deterministic"`
@@ -146,9 +160,15 @@ New algorithms were added for long term caching. These are enabled by default in
 The algorithms assign short (3 or 5 digits) numeric IDs to modules and chunks and short (2 characters) names to exports in a deterministic way.
 This is a trade-off between bundle size and long term caching.
 
+这个算法给 modules 和 chunks 提供了 3-5 位数字 ID，给导出的 name 两个字符。在打包体积和长期缓存之间，这是一个折中方案。
+
 `moduleIds/chunkIds/mangleExports: false` disables the default behavior and one can provide a custom algorithm via plugin. Note that in webpack 4 `moduleIds/chunkIds: false` without custom plugin resulted in a working build, while in webpack 5 you must provide a custom plugin.
 
+`moduleIds/chunkIds/mangleExports: false` ?
+
 **MIGRATION**: Best use the default values for `chunkIds`, `moduleIds` and `mangleExports`. You can also opt-in to the old defaults `chunkIds: "size", moduleIds: "size", mangleExports: "size"`, this will generate smaller bundles, but invalidate them more often for caching.
+
+**迁移**：最好使用 `chunkIds` `moduleIds` `mangleExports` 的默认值。也可以使用之前的默认值，这样会生成更小体积的打包，但缓存会频繁失效。
 
 Note: In webpack 4 hashed module ids yielded reduced gzip performance. This was related to changed module order and has been fixed.
 
@@ -158,6 +178,10 @@ Note: In webpack 5, `deterministic` Ids are enabled by default in production mod
 
 Webpack 5 will use a real hash of the file content when using `[contenthash]` now. Before it "only" used a hash of the internal structure.
 This can be positive impact on long term caching when only comments are changed or variables are renamed. These changes are not visible after minimizing.
+
+V5 会在设置 `contenthash` 时候使用 `real content hash`。在此之前，使用内部结构的 hash。
+
+如果只是添加注释或者改变了变量的名字，会对长期缓存产生积极影响，因为在 压缩混淆`minimizing` 之后变化看不出来。
 
 ## Major Changes: Development Support
 
